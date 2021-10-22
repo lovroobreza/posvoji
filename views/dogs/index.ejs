@@ -1,0 +1,8 @@
+<% layout('layouts/boilerplate')%>
+
+<h1>All dogs</h1>
+<% for(let dog of dogs){ %>
+
+<a href="/dogs/<%= dog._id %> "><h3><%= dog.name %></h3></a>
+
+<% } %>
