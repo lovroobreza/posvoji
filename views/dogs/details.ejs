@@ -1,12 +1,12 @@
 <% layout('layouts/boilerplate')%>
-
-<h1><%= dog.name %></h1>
-<h2><%= dog.breed %></h2>
-<h3><%= dog.age %></h3>
-<p><%= dog.description %></p>
-
-<div>
-  <form action="/dogs/<%= dog._id %>?_method=DELETE" method="POST">
-    <button>Delete</button>
-  </form>
+<div class="container">
+  <h1><%= dog.name %></h1>
+  <h2><%= dog.breed %></h2>
+  <h3><%= dog.age %></h3>
+  <p><%= dog.description %></p>
+  <div>
+    <form action="/dogs/<%= dog._id %>?_method=DELETE" method="POST">
+      <button>Delete</button>
+    </form>
+  </div>
 </div>
