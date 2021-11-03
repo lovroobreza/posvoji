@@ -4,7 +4,13 @@
   <div class="col-6 offset-3">
     <h1 class="text-center">Put a puppy up for adoption</h1>
 
-    <form action="/dogs" method="POST" novalidate class="validated-form">
+    <form
+      action="/dogs"
+      method="POST"
+      novalidate
+      class="validated-form"
+      enctype="multipart/form-data"
+    >
       <div class="mb-2">
         <label class="form-label" for="title">Name:</label>
         <input
@@ -49,6 +55,8 @@
         />
         <div class="valid-feedback">That's fine!</div>
       </div>
+
+      <input type="file" name="dog[image]" name="image" multiple />
 
       <div class="mt-3 d-flex justify-content-center">
         <button class="btn btn-success p-3">Submit</button>
