@@ -1,3 +1,103 @@
-<% layout('layouts/boilerplate')%>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Posvoji</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-<h1>home</h1>
+      div.main {
+        width: 100%;
+        height: 100vh;
+        background: rgb(226, 204, 163);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      .main-box {
+        height: 70%;
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .main-box > h1 {
+        font-size: 4rem;
+        color: rgb(207, 113, 5);
+      }
+
+      .main-box > img {
+        width: 400px;
+        border-radius: 6rem;
+      }
+
+      .gumb {
+        background: rgba(224, 125, 11, 0.726);
+        border-radius: 6rem;
+        font-size: 1.2rem;
+        padding: 1.2rem;
+        color: black;
+        font-weight: bold;
+        transition: all 0.1s ease-in;
+      }
+
+      .gumb:hover {
+        background: rgba(189, 105, 9, 0.705);
+        transform: scale(1.1);
+        color: rgb(32, 1, 44);
+      }
+
+      p {
+        font-size: 1.25rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-box">
+        <h1 class="text-center">Dobrodošli na Posvoji.si</h1>
+        <img
+          src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=694&q=80"
+          alt="Picture of the cutest dog imaginable"
+        />
+        <p class="text-center">
+          Vstopite naprej in posvojite prečudovite in zdravniško pregledane
+          kužke ali pa oddajte svoje. <br />
+          <b>
+            Pes bo vedno človekov najboljši prijatelj, poskrbite tudi vi
+            zanj.</b
+          >
+        </p>
+        <a href="/dogs" class="btn gumb">Naprej na spletno stran</a>
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

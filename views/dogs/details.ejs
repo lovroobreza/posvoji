@@ -1,10 +1,29 @@
 <% layout('layouts/boilerplate')%>
 <div class="container">
-  <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+  <div
+    id="carouselExampleControls"
+    class="mb-5 carousel slide"
+    data-ride="carousel"
+    style="width: 100%"
+  >
     <div class="carousel-inner">
       <% dog.images.forEach((img, index) => { %>
-      <div class="carousel-item <%= index===0 ? 'active' : ''%>">
-        <img src="<%= img.url %>" alt="image" />
+      <div class="carousel-item <%= index === 0 ? 'active' : ''%>">
+        <div
+          style="
+            background: #555;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+        >
+          <img
+            src="<%= img.url %>"
+            alt="image"
+            class="img"
+            style="max-width: 100%; max-height: 615px"
+          />
+        </div>
       </div>
       <% }) %>
     </div>
@@ -15,7 +34,7 @@
       role="button"
       data-slide="prev"
     >
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="carousel-control-prev-icon danger" aria-hidden="true"></span>
       <span class="sr-only">Previous</span>
     </a>
     <a
@@ -30,18 +49,31 @@
     <% } %>
   </div>
 
-  <h1><%= dog.name %></h1>
-  <h2><%= dog.breed %></h2>
-  <h3><%= dog.age %></h3>
-  <h4>Submitted by <b><%= dog.author.username %></b></h4>
-  <p><%= dog.description %></p>
+  <h2 class="mb-3 text-center">
+    To je <br />
+    <span style="color: orange; font-size: 2.5rem"><%= dog.name %></span>
+  </h2>
+  <h2>
+    Sem pasme
+    <a
+      href="https://google.com/search?q=<%=dog.breed%>"
+      target="_blank"
+      style="color: orange"
+      ><%= dog.breed %></a
+    >
+    in sem star/a <%= dog.age %> let.
+  </h2>
+  <p>Trenutni gospodar je <b><%= dog.author.username %></b></p>
+  <p style="margin: 0 0 4rem 0;"><%= dog.description %></p>
 
   <% if( currentUser && dog.author.equals(currentUser._id)) {%>
-  <a href="/dogs/<%= dog._id %>/edit" class="btn btn-info mb-2">Edit</a>
-  <div>
-    <form action="/dogs/<%= dog._id %>?_method=DELETE" method="POST">
-      <button>Delete</button>
-    </form>
+  <div class="row d-flex justify-content-center align-items-center">
+      <a href="/dogs/<%= dog._id %>/edit" class="btn btn-info mr-5">Uredite svojo objavo</a>
+
+      <form action="/dogs/<%= dog._id %>?_method=DELETE" method="POST">
+        <button class="btn btn-danger">Zbrišite svojo objavo</button>
+      </form>
+    </div>
   </div>
   <% }%>
 </div>

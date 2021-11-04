@@ -14,6 +14,7 @@ const flash = require('connect-flash')
 const passport = require('passport')
 const passportLocal = require('passport-local')
 const mongoSanitaize = require('express-mongo-sanitize')
+const helmet = require('helmet')
 
 //cloudinary
 const multer = require('multer')
@@ -52,14 +53,63 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(mongoSanitaize())
 app.use(methodOverride('_method'))
+app.use(helmet({contentSecurityPolicy:false}))
+
+//content security
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://api.mapbox.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://cdn.jsdelivr.net",
+    'https://code.jquery.com/'
+];
+const styleSrcUrls = [
+    "https://kit-free.fontawesome.com/",
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.mapbox.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://fonts.googleapis.com/",
+    "https://use.fontawesome.com/",
+];
+const connectSrcUrls = [
+    "https://api.mapbox.com/",
+    "https://a.tiles.mapbox.com/",
+    "https://b.tiles.mapbox.com/",
+    "https://events.mapbox.com/",
+];
+
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/dho9iurfh/", 
+                "https://images.unsplash.com/",
+            ],
+            fontSrc: ["'self'"],
+        },
+    })
+);
 
 //sessions
 const sessionConfig={
-    secret: 'hay',
+    name: 'posvoji.session',
+    secret: 'welcometomysite',
     resave:false,
     saveUninitialized: true,
     cookie:{
         httpOnly: true,
+        //secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 *7,
         maxAge: 1000 * 60 * 60 * 24 *7,
     }
@@ -168,6 +218,9 @@ app.delete('/dogs/:id', isLoggedIn, catchAsync(async(req,res)=>{
         return res.redirect('/dogs')
     }
     await Dog.findByIdAndDelete(id)
+    for(let img of dog.images) {
+        await cloudinary.uploader.destroy(img.filename);
+    }
     req.flash('success', 'Thank you for getting a puppy a new home!')
     res.redirect('/dogs') 
 }))
