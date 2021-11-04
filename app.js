@@ -13,6 +13,7 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('passport')
 const passportLocal = require('passport-local')
+const mongoSanitaize = require('express-mongo-sanitize')
 
 //cloudinary
 const multer = require('multer')
@@ -49,7 +50,7 @@ app.set('views', path.join(__dirname, 'views'))
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
-
+app.use(mongoSanitaize())
 app.use(methodOverride('_method'))
 
 //sessions
@@ -116,11 +117,6 @@ app.post('/dogs', isLoggedIn, upload.array('dog[image]'), validateDog, catchAsyn
     res.redirect(`/dogs/${dog._id}`)
 }))
 
-
-app.post('/dogs', upload.array('dog[image]'), (req,res)=>{
-    console.log(req.body, req.files);
-    res.send('it woek')
-})
 //SHOW SINGLE DOG
 app.get('/dogs/:id', catchAsync(async(req,res) => {
     const {id} = req.params
@@ -143,7 +139,7 @@ app.get('/dogs/:id/edit', isLoggedIn, catchAsync(async(req,res) => {
     res.render('dogs/edit', { dog })
 }))
 
-app.put('/dogs/:id', isLoggedIn, validateDog, catchAsync(async(req,res)=>{ 
+app.put('/dogs/:id', isLoggedIn, upload.array('dog[image]'), validateDog, catchAsync(async(req,res)=>{ 
     if(!req.body.dog) throw new ExpressError('Invalid try buddy', 400)
     const {id} = req.params
     const dog = await Dog.findById(id)
@@ -152,6 +148,13 @@ app.put('/dogs/:id', isLoggedIn, validateDog, catchAsync(async(req,res)=>{
         return res.redirect('/dogs')
     }
     const updatedDog = await Dog.findByIdAndUpdate(id, {...req.body.dog})
+    const images = req.files.map(f => ({url: f.path, filename: f.filename}))
+    dog.images.push(...images)
+    await dog.save()
+    if(req.body.deleteImages){
+        for(let filename of req.body.deleteImages) await cloudinary.uploader.destroy(filename)
+        await dog.updateOne({$pull: {images:{filename: {$in: req.body.deleteImages}}}})
+    }
     req.flash('success', 'Successfully updated your puppys information')
     res.redirect(`/dogs/${updatedDog._id}`)
 }))

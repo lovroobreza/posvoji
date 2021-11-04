@@ -10,7 +10,8 @@ module.exports =  validateDog = (req,res,next) =>{
         age: Joi.number().required().min(0).max(20),
         breed: Joi.string().required(),
         description: Joi.string().required(),
-    }).required()
+    }).required(),
+    deleteImages: Joi.array()
 })
     const { error } = dogSchema.validate(req.body)
     if(error){
