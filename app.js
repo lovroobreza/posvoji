@@ -15,6 +15,7 @@ const passport = require('passport')
 const passportLocal = require('passport-local')
 const mongoSanitaize = require('express-mongo-sanitize')
 const helmet = require('helmet')
+const MongoStore = require('connect-mongo');
 
 //cloudinary
 const multer = require('multer')
@@ -31,7 +32,9 @@ const isLoggedIn = require('./public/javascript/middleware')
 const validateDog = require('./public/javascript/Joi')
 
 //mongose connection
-mongoose.connect('mongodb://localhost:27017/posvoji', {
+const dbUrl='mongodb://localhost:27017/posvoji' 
+
+mongoose.connect(process.env.DB_URL || dbUrl ,{
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
@@ -51,7 +54,7 @@ app.set('views', path.join(__dirname, 'views'))
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
-app.use(mongoSanitaize())
+app.use(mongoSanitaize({ replaceWith: '_'}))
 app.use(methodOverride('_method'))
 app.use(helmet({contentSecurityPolicy:false}))
 
@@ -101,10 +104,24 @@ app.use(
     })
 );
 
-//sessions
-const sessionConfig={
+//sessions in mongo
+const secret= process.env.SECRET || 'nononothisisntright'
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret
+    }
+});
+
+store.on("error", (e)=> {
+    console.log("mongo store error", e)
+})
+
+const sessionConfig = {
+    store,
     name: 'posvoji.session',
-    secret: 'welcometomysite',
+    secret,
     resave:false,
     saveUninitialized: true,
     cookie:{
@@ -238,7 +255,7 @@ app.post('/register', catchAsync(async(req,res)=>{
     req.login(registeredUser, (err) => {
         if(err) return next(err)
         req.flash('success', 'Wellcome to Posvoji.si')
-        res.redirect('/') 
+        res.redirect('/dogs') 
     })
        
 } catch(e){
@@ -261,7 +278,7 @@ app.post('/login', passport.authenticate('local', {failureFlash: true, failureRe
 app.get('/logout', (req,res)=>{
     req.logout()
     req.flash('success', 'Goodbye')
-    res.redirect('/')
+    res.redirect('/dogs')
 })
 
 // if nothing is found
